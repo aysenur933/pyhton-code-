@@ -1,0 +1,14 @@
+t=0:.01:1.2;
+gamma=1;
+y_classic=exp(-gamma*t.^2);
+ 
+beta=.5;
+y_beta_1=exp(-gamma*t.^beta);
+ 
+beta=.4;
+y_beta_2=exp(-gamma*t.^beta);
+ 
+%beta=1.5;
+%y_beta_3=exp(-gamma*t.^beta);
+ 
+plot(t,y_classic,'o',t,y_beta_1,'x',t,y_beta_2,'g*')
