@@ -1,0 +1,49 @@
+import numpy as np
+from sklearn import svm, datasets
+from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score, roc_auc_score
+from sklearn.model_selection import train_test_split
+
+def my_kernel(X, Y):
+    D = np.zeros((X.shape[0], Y.shape[0]))
+    for i, x in enumerate(X):
+        for j, y in enumerate(Y):
+            D[i, j] = np.exp(-gamma * np.linalg.norm(x - y) ** beta)
+    return D
+
+# import some data to play with
+wine = datasets.load_wine()
+X = wine.data
+Y = wine.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=42)
+
+#Burası uygulama yapılacak satırın seçildiği kısım
+print("Test verisinin 3. satırı:",'\n',str(X_test[3,:]),'\n')
+print("Test verisinin 3.satırına karşılık gelen gerçek sınıf etiketi:",'\n',str(y_test[3]),'\n')
+X_test_v1=X_test[3,:].reshape(1, -1)
+
+# Bu kısım default SVM örneği ile elde edilen sonuçlar
+model_1 = svm.SVC(kernel="rbf",gamma=1,probability=True)
+model_1.fit(X_train, y_train)
+y_pred = model_1.predict(X_test)
+
+
+#Bu kısımda 3.satır klasik modelle tahmin ediliyor
+
+y_pred_model1 = model_1.predict(X_test_v1)
+print("Test verisinin 3.satırına karşılık gelen klasik Gauss fonk SVM ile tahmin edilen sınıf etiketi:",'\n',str(y_pred_model1),'\n')
+
+
+
+# Bu kısım bizim kendi kernelimiz ile elde edilen sonuçlar
+gamma=0.1
+beta=0.25
+model_2 = svm.SVC(kernel=my_kernel, probability=True)
+model_2.fit(X_train, y_train)
+y_pred = model_2.predict(X_test)
+
+
+
+#Bu kısımda 3.satır yeni modelle tahmin ediliyor
+y_pred_model2 = model_2.predict(X_test_v1)
+print("Test verisinin 3.satırına karşılık gelen 1. Fonk SVM ile tahmin edilen sınıf etiketi:",'\n',y_pred_model2)
